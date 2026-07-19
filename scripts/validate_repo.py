@@ -6,7 +6,11 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
+import tempfile
+import zipfile
 from pathlib import Path
+
+from package_skill import package
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -113,10 +117,45 @@ def validate_portability() -> None:
                 fail(f"{label} found in {path.relative_to(REPO_ROOT)}")
 
 
+def validate_package() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        first = Path(temporary) / "first.zip"
+        second = Path(temporary) / "second.zip"
+        package(first)
+        package(second)
+
+        if first.read_bytes() != second.read_bytes():
+            fail("skill packages are not byte-for-byte reproducible")
+
+        with zipfile.ZipFile(first) as archive:
+            entries = archive.infolist()
+            names = {entry.filename for entry in entries}
+            required = {
+                "frontend-design-pro/SKILL.md",
+                "frontend-design-pro/LICENSE.txt",
+                "frontend-design-pro/THIRD_PARTY_LICENSES.txt",
+                "frontend-design-pro/NOTICE.txt",
+                "frontend-design-pro/scripts/search.py",
+            }
+            if not required.issubset(names):
+                fail(f"skill package is missing: {sorted(required - names)}")
+            if any("__pycache__" in name or name.endswith(".pyc") for name in names):
+                fail("skill package contains generated cache files")
+            if any(entry.compress_type != zipfile.ZIP_STORED for entry in entries):
+                fail("skill package must use reproducible stored entries")
+            if any(entry.create_system != 3 for entry in entries):
+                fail("skill package contains platform-dependent metadata")
+            for entry in entries:
+                if Path(entry.filename).suffix.lower() in TEXT_SUFFIXES:
+                    if b"\r" in archive.read(entry):
+                        fail(f"skill package contains non-portable line endings: {entry.filename}")
+
+
 def main() -> None:
     validate_structure()
     validate_manifest()
     validate_portability()
+    validate_package()
 
     run([sys.executable, str(SKILL_DIR / "scripts" / "validate_data.py")])
     run(
