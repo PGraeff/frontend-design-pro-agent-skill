@@ -29,8 +29,7 @@ def package(output: Path) -> None:
     with zipfile.ZipFile(
         output,
         mode="w",
-        compression=zipfile.ZIP_DEFLATED,
-        compresslevel=9,
+        compression=zipfile.ZIP_STORED,
     ) as archive:
         for source in included_files():
             relative = source.relative_to(SKILL_DIR).as_posix()
@@ -38,12 +37,17 @@ def package(output: Path) -> None:
                 filename=f"frontend-design-pro/{relative}",
                 date_time=(1980, 1, 1, 0, 0, 0),
             )
-            info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_STORED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, source.read_bytes(), compresslevel=9)
+            archive.writestr(info, source.read_bytes())
 
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
-    print(f"Built {output.relative_to(REPO_ROOT)}")
+    try:
+        display_path = output.relative_to(REPO_ROOT)
+    except ValueError:
+        display_path = output
+    print(f"Built {display_path}")
     print(f"SHA256 {digest}")
 
 
