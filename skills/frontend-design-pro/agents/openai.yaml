@@ -1,0 +1,6 @@
+interface:
+  display_name: "Frontend Design Pro"
+  short_description: "Distinctive, usable UI without filler copy"
+  default_prompt: "Use $frontend-design-pro to design and verify this interface with concise product copy."
+policy:
+  allow_implicit_invocation: true

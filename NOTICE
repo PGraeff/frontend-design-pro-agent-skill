@@ -1,0 +1,19 @@
+Frontend Design Pro Agent Skill
+Copyright 2026 PGraeff and contributors
+
+This product includes and substantially modifies frontend design guidance from
+Anthropic's frontend-design skill:
+https://github.com/anthropics/skills/tree/main/skills/frontend-design
+Licensed under the Apache License, Version 2.0.
+
+The file skills/frontend-design-pro/SKILL.md is a substantially modified and
+combined derivative. It adds cross-platform workflow guidance, searchable
+design-intelligence integration, verification requirements, and UI-copy
+discipline.
+
+This product also includes data, references, and Python search tooling derived
+from UI UX Pro Max by Next Level Builder:
+https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+Copyright (c) 2024 Next Level Builder
+Licensed under the MIT License. See LICENSES/ui-ux-pro-max-MIT.txt and the copy
+distributed inside the installable skill.

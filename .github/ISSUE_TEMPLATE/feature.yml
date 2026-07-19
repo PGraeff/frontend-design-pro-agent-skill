@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement to the skill or its design intelligence.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Which frontend or agent workflow is currently underserved?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest useful change.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example prompts or outputs
+      description: Add sanitized examples that can become tests.
+  - type: checkboxes
+    id: provenance
+    attributes:
+      label: External material
+      options:
+        - label: I identified any external sources and their licenses.
+          required: true

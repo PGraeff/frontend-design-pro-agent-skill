@@ -1,0 +1,9 @@
+Frontend Design Pro is a substantially modified derivative of Anthropic's
+frontend-design skill, licensed under Apache License 2.0.
+
+Bundled design data, references, and Python search tooling are derived from
+UI UX Pro Max by Next Level Builder, Copyright (c) 2024 Next Level Builder,
+licensed under the MIT License.
+
+Source and modification details:
+https://github.com/PGraeff/frontend-design-pro-agent-skill/blob/main/NOTICE
