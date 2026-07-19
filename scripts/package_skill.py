@@ -12,16 +12,26 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILL_DIR = REPO_ROOT / "skills" / "frontend-design-pro"
 DEFAULT_OUTPUT = REPO_ROOT / "dist" / "frontend-design-pro.zip"
+TEXT_SUFFIXES = {".csv", ".md", ".py", ".txt", ".yaml", ".yml"}
 
 
 def included_files() -> list[Path]:
-    return sorted(
+    files = (
         path
         for path in SKILL_DIR.rglob("*")
         if path.is_file()
         and "__pycache__" not in path.parts
         and path.suffix != ".pyc"
     )
+    return sorted(files, key=lambda path: path.relative_to(SKILL_DIR).as_posix())
+
+
+def portable_bytes(source: Path) -> bytes:
+    data = source.read_bytes()
+    if source.suffix.lower() in TEXT_SUFFIXES:
+        text = data.decode("utf-8")
+        return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    return data
 
 
 def package(output: Path) -> None:
@@ -40,7 +50,7 @@ def package(output: Path) -> None:
             info.create_system = 3
             info.compress_type = zipfile.ZIP_STORED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, source.read_bytes())
+            archive.writestr(info, portable_bytes(source))
 
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
     try:

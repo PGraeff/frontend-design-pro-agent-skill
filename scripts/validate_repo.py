@@ -145,6 +145,10 @@ def validate_package() -> None:
                 fail("skill package must use reproducible stored entries")
             if any(entry.create_system != 3 for entry in entries):
                 fail("skill package contains platform-dependent metadata")
+            for entry in entries:
+                if Path(entry.filename).suffix.lower() in TEXT_SUFFIXES:
+                    if b"\r" in archive.read(entry):
+                        fail(f"skill package contains non-portable line endings: {entry.filename}")
 
 
 def main() -> None:
